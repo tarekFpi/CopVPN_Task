@@ -8,7 +8,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_id"
-        android:background="@color/white"
+        android:background="@color/purple_500"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,7 +16,7 @@
             android:id="@+id/toolbar_company"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleTextColor="@color/black"
+            app:titleTextColor="@color/white"
             app:title="@string/app_name"
             />
     </com.google.android.material.appbar.AppBarLayout>
@@ -29,29 +29,33 @@
         android:textSize="@dimen/_14sdp"
         android:drawableLeft="@drawable/baseline_search_24"
         android:background="@drawable/search_shap"
-        android:hint="Searh for Title.."
+        android:hint="Searh for number.."
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:inputType="number"
         android:id="@+id/edit_taskSearch"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_below="@+id/edit_taskSearch"
+        android:id="@+id/recyclerView_task"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView_task"
-        android:layout_margin="@dimen/_8sdp"/>
+        android:layout_below="@+id/edit_taskSearch"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp" />
 
 
     <com.airbnb.lottie.LottieAnimationView
+        android:layout_below="@+id/edit_taskSearch"
         android:id="@+id/animation_view"
         android:layout_width="@dimen/_220sdp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:layout_height="@dimen/_200sdp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         android:scaleType="fitXY"

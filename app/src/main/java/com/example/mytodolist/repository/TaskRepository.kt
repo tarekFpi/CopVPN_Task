@@ -1,5 +1,6 @@
 package com.example.mytodolist.repository
 
+
 import com.example.mytodolist.db.TaskDAo
 import com.example.mytodolist.model.task.Task_response
 import com.example.mytodolist.utils.Resource
@@ -13,24 +14,23 @@ import javax.inject.Inject
 
 class TaskRepository  @Inject constructor(private val contactDAo: TaskDAo){
 
+suspend  fun  addTask(task: Task_response)=  contactDAo.insert(task)
 
-suspend  fun  addTask(task: Task_response)=  contactDAo.Insert(task)
+suspend  fun  update(task: Task_response)=  contactDAo.update(task)
 
-suspend  fun  update(task: Task_response)=  contactDAo.Update(task)
-
-suspend  fun  delete(id:Int)=  contactDAo.DeleteByIds(id)
+suspend  fun  delete(id:Int)=  contactDAo.deleteByIds(id)
 
 
-    fun showTaskList() : Flow<Resource<List<Task_response>>> = flow {
 
-        emit(Resource.Loading())
+ fun showTaskList() : Flow<Resource<List<Task_response>>> = flow {
 
-        contactDAo.ShowData().collect {
-            emit(Resource.Success(it))
-        }
-    }.catch {
-        emit(Resource.Error(it.message ?: "Unknown Error"))
-    }.flowOn(Dispatchers.IO)
+            emit(Resource.Loading())
 
+            contactDAo.showData().collect {
+                emit(Resource.Success(it))
+            }
+        }.catch {
+            emit(Resource.Error(it.message ?: "Unknown Error"))
+       }.flowOn(Dispatchers.IO)
 
 }

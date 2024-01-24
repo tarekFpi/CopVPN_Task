@@ -49,9 +49,11 @@ class TaskListAdapter (private val context: Context,
 
         val itemPosition = taskList[position]
 
+        holder.binding.textTaskNumber.text ="Number:"+ itemPosition.number
+
         holder.binding.textTaskTitle.text ="Title:"+ itemPosition.title
 
-        holder.binding.textTaskBody.text= "Details:"+itemPosition.details
+        holder.binding.textTaskEmail.text= "Email:"+itemPosition.email
 
         holder.binding.textTaskDate.text="Date:"+ itemPosition.formattedDate
 
@@ -63,7 +65,9 @@ class TaskListAdapter (private val context: Context,
             val intent = Intent(context, UpdateActivity::class.java)
             intent.putExtra("id", itemPosition.id)
             intent.putExtra("title", itemPosition.title)
-            intent.putExtra("details",itemPosition.details)
+            intent.putExtra("email",itemPosition.email)
+            intent.putExtra("number",itemPosition.number)
+            intent.putExtra("item",itemPosition.selectItem)
 
              context.startActivity(intent)
 

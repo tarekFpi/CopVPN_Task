@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">TodoList</string>
+
+    <string-array name="placement_slide">
+        <item>Selected Item</item>
+        <item>Team-A</item>
+        <item>Team-B</item>
+        <item>Team-C</item>
+    </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <style name="OutlinedRoundedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded
+        </item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="boxStrokeColor">@color/white</item>
+    </style>
 </resources>

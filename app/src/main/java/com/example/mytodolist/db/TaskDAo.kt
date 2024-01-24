@@ -6,18 +6,20 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDAo {
 
-    @Insert
-    suspend  fun Insert(task: Task_response)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend  fun insert(task: Task_response)
 
     @Update
-    suspend fun Update(task: Task_response)
+    suspend fun update(task: Task_response)
 
     @Delete
-    suspend  fun Delete(task: Task_response)
+    suspend  fun delete(task: Task_response)
 
-    @Query("DELETE  FROM taskManager  WHERE id =:id")
-    suspend  fun DeleteByIds(id: Int)
+    @Query("DELETE  FROM todoListTask  WHERE id =:id")
+    suspend  fun deleteByIds(id: Int)
 
-    @Query("SELECT *FROM taskManager ORDER BY id DESC")
-    fun ShowData(): Flow<List<Task_response>>
+    @Query("SELECT *FROM todoListTask ORDER BY id DESC")
+    fun showData(): Flow<List<Task_response>>
+
+
 }

@@ -8,7 +8,7 @@
     
   <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_id"
-        android:background="@color/purple_200"
+        android:background="@color/purple_500"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -22,16 +22,33 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 <ScrollView
+
+    android:layout_centerInParent="true"
     android:layout_below="@+id/appbar_id"
     android:layout_width="match_parent"
+    android:scrollbars="vertical"
     android:layout_height="match_parent">
 
   <LinearLayout
-      android:layout_marginTop="@dimen/_20sdp"
-      android:layout_gravity="center"
+      android:layout_marginTop="@dimen/_16sdp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
+
+      <EditText
+          android:layout_margin="@dimen/_10sdp"
+          android:id="@+id/edit_taskNumber"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/edit_shap"
+          android:hint="task number"
+          android:padding="@dimen/_15sdp"
+          android:inputType="number"
+          android:textColor="@color/black"
+          android:textColorHint="@color/black"
+          tools:ignore="TouchTargetSizeCheck"
+          />
 
       <EditText
           android:layout_margin="@dimen/_10sdp"
@@ -40,7 +57,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@drawable/edit_shap"
-          android:hint="Title"
+          android:hint="title"
           android:padding="@dimen/_15sdp"
           android:textColor="@color/black"
           android:textColorHint="@color/black"
@@ -48,22 +65,33 @@
           />
 
       <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/edit_taskDetails"
+          android:id="@+id/edit_taskEmail"
           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/edit_taskTitle"
           android:layout_marginStart="@dimen/_10sdp"
+          android:padding="@dimen/_15sdp"
           android:layout_marginTop="@dimen/_10sdp"
           android:layout_marginEnd="@dimen/_10sdp"
           android:layout_marginBottom="@dimen/_10sdp"
           android:background="@drawable/edit_shap"
-          android:hint="Details"
-          android:padding="@dimen/_25sdp"
+          android:hint="email"
+          android:inputType="textEmailAddress"
           android:textColor="@color/black"
           android:textColorHint="@color/black"
           tools:ignore="TouchTargetSizeCheck" />
 
+      <Spinner
+          android:background="@drawable/edit_shap"
+          android:id="@+id/taskCategory_Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/_10sdp"
+          android:padding="@dimen/_15sdp"
+          android:layout_marginTop="@dimen/_10sdp"
+          android:layout_marginEnd="@dimen/_10sdp"
+          android:layout_marginBottom="@dimen/_10sdp"
+          android:entries="@array/placement_slide" />
 
       <TextView
           android:layout_margin="@dimen/_10sdp"
@@ -72,7 +100,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@drawable/edit_shap"
-          android:hint="Date"
+          android:hint="date"
           android:padding="@dimen/_15sdp"
           android:textColor="@color/black"
           android:textColorHint="@color/black"
@@ -86,7 +114,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@drawable/edit_shap"
-          android:hint="Time"
+          android:hint="time"
           android:padding="@dimen/_15sdp"
           android:textColor="@color/black"
           android:textColorHint="@color/black"
@@ -96,7 +124,6 @@
       <com.google.android.material.button.MaterialButton
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/edit_taskDetails"
           android:layout_marginStart="@dimen/_10sdp"
           android:layout_marginTop="@dimen/_10sdp"
           android:layout_marginEnd="@dimen/_10sdp"
@@ -113,6 +140,7 @@
 
 
   </LinearLayout>
-</ScrollView>
+</ScrollView
+    >
 
 </RelativeLayout>

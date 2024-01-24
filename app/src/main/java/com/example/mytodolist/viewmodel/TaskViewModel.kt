@@ -38,7 +38,7 @@ class TaskViewModel @Inject constructor(private val taskRepository: TaskReposito
     fun addTask(task: Task_response){
         viewModelScope.launch(Dispatchers.IO){
             taskRepository.addTask(task)
-            getTaskList()
+
         }
     }
 

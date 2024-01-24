@@ -1,9 +1,12 @@
 package com.example.mytodolist.view
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.graphics.PorterDuff
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -12,6 +15,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.mytodolist.R
 import com.example.mytodolist.model.task.Task_response
@@ -26,7 +31,7 @@ class UpdateActivity : AppCompatActivity() {
 
     private  lateinit var edit_title: EditText
 
-    private  lateinit var edit_details: EditText
+    private  lateinit var edit_email: EditText
 
     private lateinit var  progressDialog: ProgressDialog
 
@@ -45,6 +50,11 @@ class UpdateActivity : AppCompatActivity() {
     private  lateinit var  formattedTime:String
 
     private val calendar = Calendar.getInstance()
+
+    private var numbertask=""
+
+    private var ItemPosition=""
+
     @SuppressLint("MissingInflatedId", "UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +65,7 @@ class UpdateActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         val upArrow = resources.getDrawable(R.drawable.back)
-        upArrow.setColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
+        upArrow.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
         supportActionBar!!.setHomeAsUpIndicator(upArrow)
 
         addTaskViewModel= ViewModelProvider(this)[TaskViewModel::class.java]
@@ -65,7 +75,7 @@ class UpdateActivity : AppCompatActivity() {
 
         edit_title =findViewById(R.id.edit_taskUpTitle)
 
-        edit_details =findViewById(R.id.edit_taskUpDetails)
+        edit_email =findViewById(R.id.edit_taskUpEmail)
 
         text_date =findViewById(R.id.edit_taskUpdateDate)
 
@@ -93,13 +103,17 @@ class UpdateActivity : AppCompatActivity() {
         val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
         val minute = mcurrentTime.get(Calendar.MINUTE)
 
-        mTimePicker = TimePickerDialog(this, object : TimePickerDialog.OnTimeSetListener {
-            override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                formattedTime =String.format("%d : %d", hourOfDay, minute)
+        mTimePicker = TimePickerDialog(this,
+            { view, hourOfDay, minute ->
+                // formattedTime =  String.format("%d : %d", hourOfDay, minute)
 
-                text_time.text =formattedDate
-            }
-        }, hour, minute, false)
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                mcurrentTime.set(Calendar.MINUTE, minute)
+                val mSDF = SimpleDateFormat("hh:mm a")
+                formattedTime = mSDF.format(mcurrentTime.getTime())
+
+                text_time.text =formattedTime
+            }, hour, minute, false)
 
         mTimePicker.show()
     }
@@ -134,19 +148,21 @@ class UpdateActivity : AppCompatActivity() {
 
     private fun getData(){
 
-        var bundle :Bundle ?=intent.extras
+        val bundle :Bundle ?=intent.extras
 
-        var  title:String = bundle?.getString("title").toString()
+        val title:String = bundle?.getString("title").toString()
 
         updateId  = bundle?.getInt("id")!!
 
-        var  details:String = bundle.getString("details").toString()
+        val email:String = bundle.getString("email").toString()
 
+        numbertask = bundle.getString("number").toString()
+
+        ItemPosition = bundle.getString("item").toString()
 
         edit_title.setText(title)
 
-        edit_details.setText(details)
-
+        edit_email.setText(email)
 
     }
 
@@ -156,7 +172,7 @@ class UpdateActivity : AppCompatActivity() {
         if(edit_title.text.isEmpty()){
             Snackbar.make(view, "Title is Empty..", Snackbar.LENGTH_SHORT).show()
 
-        }else if(edit_details.text.isEmpty()){
+        }else if(edit_email.text.isEmpty()){
             Snackbar.make(view, "Details is Empty..", Snackbar.LENGTH_SHORT).show()
 
         }else if(text_date.text.isEmpty()){
@@ -166,18 +182,44 @@ class UpdateActivity : AppCompatActivity() {
             Snackbar.make(view, "Time is Empty..", Snackbar.LENGTH_SHORT).show()
         }else{
 
-            var title =edit_title.text.toString()
+            val title =edit_title.text.toString()
 
-            var details =edit_details.text.toString()
+            val email =edit_email.text.toString()
 
-            addTaskViewModel.updateTask(Task_response(updateId,title,details,formattedDate,formattedTime))
+           addTaskViewModel.updateTask(Task_response(updateId,numbertask,title,email,ItemPosition,formattedDate,formattedTime))
 
             Snackbar.make(view, "Update SuccessFull..", Snackbar.LENGTH_SHORT).show()
             edit_title.setText("")
-            edit_details.setText("")
+            edit_email.setText("")
             text_date.text = ""
             text_time.text = ""
             progressDialog.dismiss()
+
+            notificationShow("Update SuccessFull..")
         }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun notificationShow(message: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel =
+                NotificationChannel("Channel", "Channel", NotificationManager.IMPORTANCE_HIGH)
+            val manager = applicationContext.getSystemService(
+                NotificationManager::class.java
+            ) as NotificationManager
+            manager.createNotificationChannel(notificationChannel)
+        }
+        val notification: NotificationCompat.Builder =
+            NotificationCompat.Builder(applicationContext, "Channel")
+                .setContentTitle("Update Screen")
+                .setSmallIcon(R.drawable.baseline_notifications_active_24)
+                .setContentText(message)
+                .setAutoCancel(true) //.setSound(Uri.)
+                .setWhen(System.currentTimeMillis())
+        val notificationManagerCompat = NotificationManagerCompat.from(
+            applicationContext
+        )
+        notificationManagerCompat.notify(1, notification.build())
     }
 }

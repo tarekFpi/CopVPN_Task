@@ -4,36 +4,43 @@ import android.app.*
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.mytodolist.R
 import com.example.mytodolist.model.task.Task_response
+import com.example.mytodolist.utils.CheckInternetConnection
 import com.example.mytodolist.viewmodel.TaskViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddTaskActivity : AppCompatActivity() {
 
+    private  lateinit var edit_number: EditText
+
     private  lateinit var edit_title: EditText
 
-    private  lateinit var edit_details: EditText
+    private  lateinit var edit_email: EditText
 
     private  lateinit var text_date: TextView
 
     private  lateinit var text_time: TextView
 
-    private lateinit var addTaskViewModel: TaskViewModel
+    private lateinit var taskViewModel: TaskViewModel
 
     private lateinit var toolbar: Toolbar
 
@@ -41,7 +48,15 @@ class AddTaskActivity : AppCompatActivity() {
 
     private  lateinit var  formattedTime:String
 
+    private  lateinit var  spinnerTask: Spinner
+
+    private var itemposition = ""
+
     private val calendar = Calendar.getInstance()
+
+    @Inject
+    lateinit var checkInternetConnection: CheckInternetConnection
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,15 +70,34 @@ class AddTaskActivity : AppCompatActivity() {
         upArrow.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
         supportActionBar!!.setHomeAsUpIndicator(upArrow)
 
-        addTaskViewModel= ViewModelProvider(this)[TaskViewModel::class.java]
+        taskViewModel= ViewModelProvider(this)[TaskViewModel::class.java]
+
+        edit_number =findViewById(R.id.edit_taskNumber)
 
         edit_title =findViewById(R.id.edit_taskTitle)
 
-        edit_details =findViewById(R.id.edit_taskDetails)
+        edit_email =findViewById(R.id.edit_taskEmail)
 
         text_date =findViewById(R.id.add_taskDate)
 
         text_time =findViewById(R.id.add_taskTime)
+
+        spinnerTask=findViewById(R.id.taskCategory_Spinner)
+
+
+        spinnerTask.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                itemposition = parent?.getItemAtPosition(position).toString()
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        })
 
 
         text_time.setOnClickListener {
@@ -78,6 +112,23 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        internetConnection()
+    }
+
+    private  fun internetConnection(){
+
+        if (!checkInternetConnection.isInternetAvailable(this))
+
+            Toast.makeText(applicationContext, "No Internet", Toast.LENGTH_SHORT).show()
+
+
+    }
+
+
 
     private fun showDatePicker() {
         // Create a DatePickerDialog
@@ -132,28 +183,45 @@ class AddTaskActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun save_button(view: View) {
 
-        if(edit_title.text.isEmpty()){
-            Snackbar.make(view, "Title is Empty..", Snackbar.LENGTH_SHORT).show()
+         if(edit_number.text.isEmpty()){
+            Snackbar.make(view, "Number is Empty..", Snackbar.LENGTH_LONG).show()
 
-        }else if(edit_details.text.isEmpty()){
-            Snackbar.make(view, "Details is Empty..", Snackbar.LENGTH_SHORT).show()
+        }else if(edit_title.text.isEmpty()){
+            Snackbar.make(view, "Title is Empty..", Snackbar.LENGTH_LONG).show()
 
-        }else if(text_date.text.isEmpty()){
-            Snackbar.make(view, "Date is Empty..", Snackbar.LENGTH_SHORT).show()
-        }else{
+        }else if(edit_email.text.isEmpty()){
+            Snackbar.make(view, "Email is Empty..", Snackbar.LENGTH_LONG).show()
+
+        }else  if (itemposition=="Selected Item") {
+
+        Snackbar.make(view, "Dropdown Category Item Empty..", Snackbar.LENGTH_LONG).show()
+
+        } else if(text_date.text.isEmpty()){
+
+            Snackbar.make(view, "Date is Empty..", Snackbar.LENGTH_LONG).show()
+        } else if(text_time.text.isEmpty()){
+
+             Snackbar.make(view, "Time is Empty..", Snackbar.LENGTH_LONG).show()
+         }else{
 
 
-             var title =edit_title.text.toString()
+             val number =edit_number.text.toString()
 
-             var details =edit_details.text.toString()
+             val title =edit_title.text.toString()
 
-              var taskResponse = Task_response(null,title,details,formattedDate,formattedTime)
-              addTaskViewModel.addTask(taskResponse)
+             val email =edit_email.text.toString()
 
+              val taskResponse = Task_response(null,number,title,email,itemposition,formattedDate,formattedTime)
+             taskViewModel.addTask(taskResponse)
+
+            edit_number.setText("")
             edit_title.setText("")
-            edit_details.setText("")
+            edit_email.setText("")
+            spinnerTask.setSelection(0)
             text_date.text = ""
             text_time.text = ""
+
+             notificationShow("Save SuccessFull..")
             Toast.makeText(applicationContext, "Save SuccessFull..", Toast.LENGTH_SHORT).show()
 
 
@@ -161,5 +229,28 @@ class AddTaskActivity : AppCompatActivity() {
 
     }
 
+
+    @SuppressLint("MissingPermission")
+    private fun notificationShow(message: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel =
+                NotificationChannel("Channel", "Channel", NotificationManager.IMPORTANCE_HIGH)
+            val manager = applicationContext.getSystemService(
+                NotificationManager::class.java
+            ) as NotificationManager
+            manager.createNotificationChannel(notificationChannel)
+        }
+        val notification: NotificationCompat.Builder =
+            NotificationCompat.Builder(applicationContext, "Channel")
+                .setContentTitle("Add Screen")
+                .setSmallIcon(R.drawable.baseline_notifications_active_24)
+                .setContentText(message)
+                .setAutoCancel(true) //.setSound(Uri.)
+                .setWhen(System.currentTimeMillis())
+        val notificationManagerCompat = NotificationManagerCompat.from(
+            applicationContext
+        )
+        notificationManagerCompat.notify(1, notification.build())
+    }
 
 }

@@ -1,5 +1,7 @@
 package com.example.mytodolist.view
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Build
@@ -11,6 +13,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,9 +23,11 @@ import com.airbnb.lottie.LottieAnimationView
 import com.example.mytodolist.R
 import com.example.mytodolist.adapter.TaskListAdapter
 import com.example.mytodolist.model.task.Task_response
+import com.example.mytodolist.utils.CheckInternetConnection
 import com.example.mytodolist.utils.Resource
 import com.example.mytodolist.viewmodel.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -40,6 +46,9 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
     private lateinit var  editText_TaskSearch: EditText
 
     private lateinit var  lottieAnimationView: LottieAnimationView
+
+    @Inject
+    lateinit var checkInternetConnection: CheckInternetConnection
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId", "SuspiciousIndentation")
@@ -72,6 +81,9 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
     }
 
 
+
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
 
@@ -119,11 +131,22 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
             }
         })
 
+
+        internetConnection()
+    }
+
+    private  fun internetConnection(){
+
+        if (!checkInternetConnection.isInternetAvailable(this))
+
+            Toast.makeText(applicationContext, "No Internet", Toast.LENGTH_SHORT).show()
+
+
     }
 
 
 
-      private fun apiError(it:String){
+    private fun apiError(it:String){
         Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
     }
 
@@ -134,7 +157,7 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
 
      for (item: Task_response in tasklList) {
 
-     if (item.title.toString().lowercase().contains(textData.toString().lowercase()))
+     if (item.number.toString().lowercase().contains(textData.toString().lowercase()))
        {
            list.add(item)
        }
@@ -144,7 +167,7 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
 
         } catch (exception: Exception) {
 
-            Toast.makeText(this, "${exception.toString()}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, exception.toString(), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -161,6 +184,31 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
 
         }
 
+        notificationShow("Task Delete SuccessFull..")
+
         Toast.makeText(this, "Task Delete SuccessFull..", Toast.LENGTH_SHORT).show()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun notificationShow(message: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel =
+                NotificationChannel("Channel", "Channel", NotificationManager.IMPORTANCE_HIGH)
+            val manager = applicationContext.getSystemService(
+                NotificationManager::class.java
+            ) as NotificationManager
+            manager.createNotificationChannel(notificationChannel)
+        }
+        val notification: NotificationCompat.Builder =
+            NotificationCompat.Builder(applicationContext, "Channel")
+                .setContentTitle("Delete")
+                .setSmallIcon(R.drawable.baseline_notifications_active_24)
+                .setContentText(message)
+                .setAutoCancel(true) //.setSound(Uri.)
+                .setWhen(System.currentTimeMillis())
+        val notificationManagerCompat = NotificationManagerCompat.from(
+            applicationContext
+        )
+        notificationManagerCompat.notify(1, notification.build())
     }
 }
