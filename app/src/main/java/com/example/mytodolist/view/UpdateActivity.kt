@@ -150,7 +150,7 @@ class UpdateActivity : AppCompatActivity() {
 
         val bundle :Bundle ?=intent.extras
 
-        val title:String = bundle?.getString("title").toString()
+        val title:String = bundle?.getString("text").toString()
 
         updateId  = bundle?.getInt("id")!!
 
@@ -170,10 +170,10 @@ class UpdateActivity : AppCompatActivity() {
 
 
         if(edit_title.text.isEmpty()){
-            Snackbar.make(view, "Title is Empty..", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view, "Text is Empty..", Snackbar.LENGTH_SHORT).show()
 
         }else if(edit_email.text.isEmpty()){
-            Snackbar.make(view, "Details is Empty..", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view, "Email is Empty..", Snackbar.LENGTH_SHORT).show()
 
         }else if(text_date.text.isEmpty()){
             Snackbar.make(view, "Date is Empty..", Snackbar.LENGTH_SHORT).show()

@@ -57,7 +57,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@drawable/edit_shap"
-          android:hint="title"
+          android:hint="text"
           android:padding="@dimen/_15sdp"
           android:textColor="@color/black"
           android:textColorHint="@color/black"

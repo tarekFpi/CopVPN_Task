@@ -29,12 +29,12 @@
         android:textSize="@dimen/_14sdp"
         android:drawableLeft="@drawable/baseline_search_24"
         android:background="@drawable/search_shap"
-        android:hint="Searh for number.."
+        android:hint="Searh for text.."
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="number"
+        android:inputType="text"
         android:id="@+id/edit_taskSearch"/>
 
     <androidx.recyclerview.widget.RecyclerView

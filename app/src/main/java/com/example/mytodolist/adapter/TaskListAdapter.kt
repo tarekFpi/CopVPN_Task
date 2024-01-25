@@ -1,4 +1,5 @@
 package com.example.mytodolist.adapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -45,26 +46,27 @@ class TaskListAdapter (private val context: Context,
     override fun getItemCount(): Int = taskList.size
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: MyviewHolder, position: Int) {
 
         val itemPosition = taskList[position]
 
-        holder.binding.textTaskNumber.text ="Number:"+ itemPosition.number
+        holder.binding.textTaskNumber.text ="number:"+ itemPosition.number
 
-        holder.binding.textTaskTitle.text ="Title:"+ itemPosition.title
+        holder.binding.textTaskTitle.text ="text:"+ itemPosition.title
 
-        holder.binding.textTaskEmail.text= "Email:"+itemPosition.email
+        holder.binding.textTaskEmail.text= "email:"+itemPosition.email
 
-        holder.binding.textTaskDate.text="Date:"+ itemPosition.formattedDate
+        holder.binding.textTaskDate.text="date:"+ itemPosition.formattedDate
 
-        holder.binding.textTaskTime.text="Time:"+ itemPosition.formattedTime
+        holder.binding.textTaskTime.text="time:"+ itemPosition.formattedTime
 
 
         holder.binding.taskUpdteIcons.setOnClickListener {
 
             val intent = Intent(context, UpdateActivity::class.java)
             intent.putExtra("id", itemPosition.id)
-            intent.putExtra("title", itemPosition.title)
+            intent.putExtra("text", itemPosition.title)
             intent.putExtra("email",itemPosition.email)
             intent.putExtra("number",itemPosition.number)
             intent.putExtra("item",itemPosition.selectItem)

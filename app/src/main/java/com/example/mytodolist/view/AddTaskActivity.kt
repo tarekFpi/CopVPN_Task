@@ -187,12 +187,12 @@ class AddTaskActivity : AppCompatActivity() {
             Snackbar.make(view, "Number is Empty..", Snackbar.LENGTH_LONG).show()
 
         }else if(edit_title.text.isEmpty()){
-            Snackbar.make(view, "Title is Empty..", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view, "Text is Empty..", Snackbar.LENGTH_LONG).show()
 
         }else if(edit_email.text.isEmpty()){
             Snackbar.make(view, "Email is Empty..", Snackbar.LENGTH_LONG).show()
 
-        }else  if (itemposition=="Selected Item") {
+        }else  if (itemposition=="selected item") {
 
         Snackbar.make(view, "Dropdown Category Item Empty..", Snackbar.LENGTH_LONG).show()
 

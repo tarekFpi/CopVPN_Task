@@ -157,7 +157,7 @@ class TaskListActivity : AppCompatActivity() , TaskListAdapter.EventDeleteIconCl
 
      for (item: Task_response in tasklList) {
 
-     if (item.number.toString().lowercase().contains(textData.toString().lowercase()))
+     if (item.title.toString().lowercase().contains(textData.toString().lowercase()))
        {
            list.add(item)
        }
